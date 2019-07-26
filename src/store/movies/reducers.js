@@ -46,15 +46,3 @@ export default function reducer(state = initialState, action) {
             return state;
     }
 }
-
-
-// return state.map((post)=>{
-//         if(post.id === action.id) {
-//           return {
-//              ...post,
-//              title:action.data.newTitle,
-//              message:action.data.newMessage,
-//              editing: !post.editing
-//           }
-//         } else return post;
-//       })

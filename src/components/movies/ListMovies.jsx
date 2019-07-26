@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { deleteMovieAction } from '../../store/movies/action';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom';
 import SectionToolbar from '../common/SectionToolbar';
 import Title from '../common/Title';
 import SectionTitle from '../common/SectionTitle';
+import FormInput from './forms_utils/FormInput';
+import FormSelect from './forms_utils/FormSelect';
+import { genders, years, clasifications } from '../../store/movies/initialState';
 
 
 const ListMovies = props => {
@@ -17,6 +20,46 @@ const ListMovies = props => {
         props.deleteMovieToStore(movies[index]);
 
     }
+    
+    const [ query, setQuery ] = useState({
+      name: '',
+      gender: '',
+      year: '',
+      clasification: '',
+      director: '',
+    });
+
+    const handlerOnChange = ({target}) => {      
+      setQuery({...query, [target.name]: target.value })
+    }
+
+    const filtrate = q => {
+
+      let filteredMovies = movies.filter(
+        movie => movie.name.includes(q.name)
+      )
+
+      filteredMovies = filteredMovies.filter(
+        movie => movie.gender.includes(q.gender)
+      )
+
+      filteredMovies = filteredMovies.filter(
+        movie => movie.year.toString().includes(q.year)
+      )
+
+      filteredMovies = filteredMovies.filter(
+        movie => movie.clasification.includes(q.clasification)
+      )
+      filteredMovies = filteredMovies.filter(
+        movie => movie.director.includes(q.director)
+      )
+
+      return filteredMovies;
+
+    }
+    
+    const filteredMovies = filtrate(query);
+
     return (
       <React.Fragment>
           <SectionTitle>
@@ -43,15 +86,60 @@ const ListMovies = props => {
             
             <tbody>
               <tr>
-                <td><input type="text" className="form-control form-control-sm"/></td>
-                <td><input type="text" className="form-control form-control-sm"/></td>
-                <td><input type="text" className="form-control form-control-sm"/></td>
-                <td><input type="text" className="form-control form-control-sm"/></td>
-                <td><input type="text" className="form-control form-control-sm"/></td>
+                <td>
+
+                  <FormInput 
+                    className="form-control-sm" 
+                    name="name" 
+                    value={query.name} 
+                    handlerOnChange={handlerOnChange}
+                  />
+
+                </td>
+                <td>
+                  <FormSelect 
+                    handlerOnChange={handlerOnChange}
+                    name="gender"
+                    value={query.gender}
+                    options={genders.map(gender => ({'name': gender, 'value': gender}))}
+                    className="form-control-sm" 
+                  />
+
+                </td>
+                <td>
+
+                  <FormSelect 
+                    handlerOnChange={handlerOnChange}
+                    name="year"
+                    value={query.year}
+                    options={years()}
+                    className="form-control-sm" 
+                  />
+
+                </td>
+                <td>
+
+                  <FormSelect 
+                    handlerOnChange={handlerOnChange}
+                    name="clasification"
+                    value={query.clasification}
+                    options={clasifications}
+                    className="form-control-sm" 
+                  />
+
+                </td>
+                <td>
+                  <FormInput 
+                    className="form-control-sm" 
+                    name="director" 
+                    value={query.director} 
+                    handlerOnChange={handlerOnChange}
+                  />
+                </td>
                 <td></td>
               </tr>
               {
-                  movies.map((movie, index) => 
+                  filteredMovies.map((movie, index) => 
                       <tr key={index}>
                         <td>{movie.name}</td>
                         <td>{movie.gender}</td>
@@ -62,7 +150,7 @@ const ListMovies = props => {
                           <Link to={`edit/${movie.id}`} className="edit" title="Edit" data-toggle="tooltip">
                             <i className="material-icons">&#xE254;</i>
                           </Link>
-                          <a href="#" className="delete" title="Delete" data-toggle="tooltip" onClick={(e) => { if (window.confirm(`Estas seguro de eliminar ${movie.name}?`)) handlerOnDeleteMovie(index, e) } }>
+                          <a href="/#" className="delete" title="Delete" data-toggle="tooltip" onClick={(e) => { if (window.confirm(`Estas seguro de eliminar ${movie.name}?`)) handlerOnDeleteMovie(index, e) } }>
                             <i className="material-icons">&#xE872;</i>
                           </a>
                         </td>
@@ -77,9 +165,10 @@ const ListMovies = props => {
 }
 
 
-const mapStateToProps = state => {
+const mapStateToProps = GlobalState => {
+
     return {
-        ...state.movies
+        ...GlobalState.movies
     }
 }
 

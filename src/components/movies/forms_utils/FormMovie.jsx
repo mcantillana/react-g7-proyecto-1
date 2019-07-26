@@ -2,43 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import FormInput from './FormInput';
 import FormSelect from './FormSelect';
-
+import { genders, years, clasifications } from '../../../store/movies/initialState';
 
 const FormMovie = props => {
 
     const { movie, handlerOnSubmit, handlerOnChange, LabelBtn } = props;
-
-    const genders = [
-      'Acción',
-      'Anime',
-      'Documentales',
-      'Dramas',
-      'Comedias',
-      'Infantil',
-      'Terror',
-      'Musicales',
-      'Romance',
-      'Otro',
-    ]
-  
-    /* Generate years for select input. */
-    const years = () => {
-      const current_year = new Date().getFullYear();
-      const _years = []
-      for(let i=1960;i<=current_year;i++) {
-          _years.push({name: i, value: i})
-      }
-            return _years;
-    }
-
-    const clasifications = [
-      {value: 'ATP', name:' Apto para todo el público'},
-      {value: '+13', name:'Apta para mayores de 13 años'},
-      {value: '+16', name:'Apta para mayores de 16 años'},
-      {value: '+18', name:'Apta para mayores de 18 años'},
-      {value: 'C', name:'Exhibición condicionada'},
-    ]
-
 
     return (
         <form onSubmit={handlerOnSubmit}>
